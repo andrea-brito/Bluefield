@@ -1,21 +1,44 @@
 import React from 'react';
-import {Button} from './Button';
-import {Link} from 'react-router-dom';
+import { Button } from './Button';
+import { Link } from 'react-router-dom';
 import './Top.css';
+import * as Api from '../services/api.service';
+import * as Functions from '../services/functions.service';
 
-function Top({lightBg,topLine,lightText,lightTextDesc,headline,description,buttonLabel,imgStart, caminho
+function Top({ lightBg, topLine, lightText, lightTextDesc, headline, description, buttonLabel, imgStart, caminho
 }) {
+
+    const [info, setInfo] = React.useState({});
+    const getInfo = async () => {
+        try {
+            let response = (await Api.getInfoData());
+            // console.log(response.data)
+            if (response?.data) {
+                setInfo(Functions.dataExtractor(response?.data));
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    React.useEffect(() => {
+        getInfo();
+    }, []);
+
     return (
         <div>
             <div className={lightBg ? 'home__hero-section fundoImage' : 'home__hero-section darkBg'}>
                 <div className="container">
-                    <div className="row home__hero-row" style={{ display:'flex',
-                    flexDirection: imgStart === 'start' ? 'row-reverse' : 'row'}}>
+                    <div className="row home__hero-row" style={{
+                        display: 'flex',
+                        flexDirection: imgStart === 'start' ? 'row-reverse' : 'row'
+                    }}>
                         <div className="col">
                             <div className="home__hero-text-wrapper">
                                 <div className="top-line">{topLine}</div>
-                                <h1 className={lightText ? 'heading' : 'heading dark'}>{headline}</h1>
-                                <p className={lightTextDesc ? 'home__hero-subtitle' : 'home__hero-subtitle dark'}>{description}</p>
+
+                                {info?.main_title_h1 && <h1 className={lightText ? 'heading' : 'heading dark'}>{info?.main_title_h1?.content}</h1>}
+                                {info?.main_title_h2 && <p className={lightTextDesc ? 'home__hero-subtitle' : 'home__hero-subtitle dark'}>{info?.main_title_h2?.content}</p>}
                                 <Link to={caminho}>
                                     <Button buttonSize='btn--wide' buttonColor='blue'>{buttonLabel}</Button>
                                 </Link>

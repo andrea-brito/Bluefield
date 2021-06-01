@@ -1,9 +1,9 @@
 import axios from "../services/axios.service";
 
-export const getTitleData = async () => {
+export const getInfoData = async () => {
 
     try {
-        let response = await axios.get("/get_title_data");
+        let response = await axios.get("/information/get_info_data");
         return response;
     } catch (error) {
         console.log(error)
